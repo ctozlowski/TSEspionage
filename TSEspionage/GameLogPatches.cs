@@ -6,8 +6,8 @@
 
 using System;
 using System.Linq;
+using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
 
 namespace TSEspionage
 {
@@ -16,10 +16,10 @@ namespace TSEspionage
      */
     public static class GameLogPatches
     {
-        private static ILogger _log;
+        private static ManualLogSource _log;
         private static GameLogWriter _gameLogWriter;
 
-        public static void Init(GameLogWriter gameLogWriter, ILogger log)
+        public static void Init(GameLogWriter gameLogWriter, ManualLogSource log)
         {
             _gameLogWriter = gameLogWriter;
             _log = log;
@@ -53,7 +53,7 @@ namespace TSEspionage
                 }
                 catch (Exception e)
                 {
-                    _log.Log(LogType.Error, $"Failed writing game log for game {gameId}", e);
+                    _log.LogError($"Failed writing game log for game {gameId}: {e}");
                 }
             }
         }

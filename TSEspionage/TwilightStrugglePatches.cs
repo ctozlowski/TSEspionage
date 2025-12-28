@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -121,7 +121,7 @@ namespace TSEspionage
                 var influenceBar = parent.transform.Find("Influence").gameObject;
                 var finalControlBar = Object.Instantiate(influenceBar, parent.transform);
                 finalControlBar.name = "FinalInfluence";
-                finalControlBar.AddComponent(typeof(RegionControlBar));
+                finalControlBar.AddComponent<RegionControlBar>();
                 finalControlBar.transform.SetSiblingIndex(influenceBar.transform.GetSiblingIndex() + 1);
 
                 // Set position and size

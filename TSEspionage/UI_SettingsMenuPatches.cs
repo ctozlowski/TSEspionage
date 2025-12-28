@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -9,6 +9,7 @@ using System.Linq;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -110,7 +111,12 @@ namespace TSEspionage
 
         public static void Init()
         {
-            SceneManager.sceneLoaded += (scene2, mode) => HandleSceneLoaded(scene2);
+            SceneManager.sceneLoaded += (UnityAction<Scene, LoadSceneMode>)OnSceneLoaded;
+        }
+
+        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            HandleSceneLoaded(scene);
         }
 
         /**
@@ -206,7 +212,7 @@ namespace TSEspionage
             fpsButton.Find("Label (TMP)").GetComponent<TextMeshProUGUI>().text = "x FPS Button";
 
             var clickEvent = new Button.ButtonClickedEvent();
-            clickEvent.AddListener(ShowFpsPopup);
+            clickEvent.AddListener((UnityAction)ShowFpsPopup);
             fpsButton.GetComponent<Button>().onClick = clickEvent;
         }
 

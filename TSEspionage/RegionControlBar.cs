@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Attributes;
 using GameData;
 using UnityEngine;
@@ -93,12 +94,12 @@ namespace TSEspionage
                     _imageUsa,
                     _imageUsa.fillAmount,
                     regionScore.player_score_state_usa * 0.25f,
-                    _animateTime));
+                    _animateTime).WrapToIl2Cpp());
                 StartCoroutine(AnimateBar(
                     _imageUssr,
                     _imageUssr.fillAmount,
                     regionScore.player_score_state_ussr * 0.25f,
-                    _animateTime));
+                    _animateTime).WrapToIl2Cpp());
             }
 
             _usaScore = regionScore.player_score_state_usa;

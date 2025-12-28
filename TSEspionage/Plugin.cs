@@ -95,7 +95,7 @@ namespace TSEspionage
             var gameEventHandler = new GameEventHandler(gameLogWriter);
 
             // Initialize the patch classes with their dependencies
-            GameLogPatches.Init(gameLogWriter, new BepInExUnityLogger(Log));
+            GameLogPatches.Init(gameLogWriter, Log);
             LoadLevelSplashScreenPatches.Init();
             TwilightStrugglePatches.Init(gameEventHandler);
             UI_SettingsMenuPatches.Init();
@@ -120,93 +120,4 @@ namespace TSEspionage
         public const string PLUGIN_VERSION = "0.2.0";
     }
 
-    /// <summary>
-    /// A wrapper around BepInEx's ManualLogSource to provide Unity's ILogger interface.
-    /// This allows existing code that expects Unity's logger to work with BepInEx logging.
-    /// </summary>
-    public class BepInExUnityLogger : UnityEngine.ILogger
-    {
-        private readonly ManualLogSource _log;
-
-        public BepInExUnityLogger(ManualLogSource log)
-        {
-            _log = log;
-        }
-
-        public UnityEngine.ILogHandler logHandler { get; set; }
-        public bool logEnabled { get; set; } = true;
-        public UnityEngine.LogType filterLogType { get; set; } = UnityEngine.LogType.Log;
-
-        public bool IsLogTypeAllowed(UnityEngine.LogType logType) => logEnabled;
-
-        public void Log(UnityEngine.LogType logType, object message)
-        {
-            if (!logEnabled) return;
-            
-            switch (logType)
-            {
-                case UnityEngine.LogType.Error:
-                case UnityEngine.LogType.Exception:
-                case UnityEngine.LogType.Assert:
-                    _log.LogError(message?.ToString());
-                    break;
-                case UnityEngine.LogType.Warning:
-                    _log.LogWarning(message?.ToString());
-                    break;
-                default:
-                    _log.LogInfo(message?.ToString());
-                    break;
-            }
-        }
-
-        public void Log(UnityEngine.LogType logType, object message, UnityEngine.Object context)
-        {
-            Log(logType, message);
-        }
-
-        public void Log(UnityEngine.LogType logType, string tag, object message)
-        {
-            Log(logType, $"[{tag}] {message}");
-        }
-
-        public void Log(UnityEngine.LogType logType, string tag, object message, UnityEngine.Object context)
-        {
-            Log(logType, tag, message);
-        }
-
-        public void Log(object message)
-        {
-            Log(UnityEngine.LogType.Log, message);
-        }
-
-        public void LogError(string tag, object message)
-        {
-            Log(UnityEngine.LogType.Error, tag, message);
-        }
-
-        public void LogException(System.Exception exception)
-        {
-            _log.LogError(exception.ToString());
-        }
-
-        public void LogException(System.Exception exception, UnityEngine.Object context)
-        {
-            LogException(exception);
-        }
-
-        public void LogFormat(UnityEngine.LogType logType, string format, params object[] args)
-        {
-            Log(logType, string.Format(format, args));
-        }
-
-        public void LogFormat(UnityEngine.LogType logType, UnityEngine.Object context, string format, params object[] args)
-        {
-            LogFormat(logType, format, args);
-        }
-
-        public void LogWarning(string tag, object message)
-        {
-            Log(UnityEngine.LogType.Warning, tag, message);
-        }
-    }
 }

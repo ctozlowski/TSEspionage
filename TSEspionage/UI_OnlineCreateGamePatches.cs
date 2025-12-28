@@ -1,11 +1,10 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -106,14 +105,9 @@ namespace TSEspionage
                 __instance.m_messagePopupText.text = "Creating game...";
                 __instance.m_messagePopup.SetActive(true);
                 __instance.m_messagePopupCancelButton.SetActive(false);
-                ___m_delayCoroutine = __instance.StartCoroutine((IEnumerator)CallInstanceMethod(
-                    __instance,
-                    "ProcessDelayTime",
-                    new object[]
-                    {
-                        __instance.m_minDialogDisplayTime
-                    }
-                ));
+                // In IL2CPP, call the method directly - it returns Il2CppSystem.Collections.IEnumerator
+                // which StartCoroutine can accept directly
+                ___m_delayCoroutine = __instance.StartCoroutine(__instance.ProcessDelayTime(__instance.m_minDialogDisplayTime));
                 CreateGame(__instance);
 
                 return false;
@@ -227,12 +221,6 @@ namespace TSEspionage
         {
             var field = AccessTools.Field(typeof(T), fieldName);
             return field.GetValue(instance);
-        }
-
-        private static object CallInstanceMethod<T>(T instance, string methodName, object[] args)
-        {
-            var method = AccessTools.Method(typeof(T), methodName);
-            return method.Invoke(instance, args);
         }
 
         private static int GetGameTime()
