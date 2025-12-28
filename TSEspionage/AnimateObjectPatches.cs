@@ -1,10 +1,9 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-using System;
 using HarmonyLib;
 using UnityEngine;
 
@@ -30,9 +29,6 @@ namespace TSEspionage
         private const float LongPauseFast = 1.25f;
         private const float LongPauseFastest = 0.66666f;
 
-        private static readonly AccessTools.FieldRef<AnimateObject, float> AnimationDivisorRef =
-            AccessTools.FieldRefAccess<AnimateObject, float>("m_optionScalar");
-
         [HarmonyPatch(typeof(AnimateObject), "SetOptionScalar")]
         public static class SetOptionScalarPatch
         {
@@ -57,7 +53,8 @@ namespace TSEspionage
                 }
 
                 var scale = InternalVert / Screen.height;
-                AnimationDivisorRef(__instance) = (float)(slowdown * scale);
+                // In IL2CPP, private fields are exposed as properties via Il2CppInterop
+                __instance.m_optionScalar = (float)(slowdown * scale);
 
                 return false;
             }

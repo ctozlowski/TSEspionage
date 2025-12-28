@@ -1,10 +1,12 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-using System.Collections.Generic;
+using System;
+using System.Collections;
+using Il2CppInterop.Runtime.Attributes;
 using GameData;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +19,9 @@ namespace TSEspionage
      */
     public class RegionControlBar : MonoBehaviour
     {
+        // IL2CPP requires this constructor for injected types
+        public RegionControlBar(IntPtr ptr) : base(ptr) { }
+
         private const float InfluenceBarHeight = 50;
         private const float InfluenceBarPadding = 2;
 
@@ -39,6 +44,7 @@ namespace TSEspionage
             _animateTime = mAnimateTime;
         }
 
+        [HideFromIl2Cpp]
         public void HandleRegionScore(GameFinalRegionScoreState regionScore)
         {
             if (regionScore.shuttle_diplomacy_in_play > 0 && !_controlBar.activeInHierarchy)
@@ -99,7 +105,12 @@ namespace TSEspionage
             _ussrScore = regionScore.player_score_state_ussr;
         }
 
-        private static IEnumerator<YieldInstruction> AnimateBar(
+        /// <summary>
+        /// Animates the fill amount of an Image over time.
+        /// In IL2CPP, coroutines must return IEnumerator (not generic version).
+        /// </summary>
+        [HideFromIl2Cpp]
+        private static IEnumerator AnimateBar(
             Image image,
             float currentFill,
             float targetFill,

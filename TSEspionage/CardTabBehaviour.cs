@@ -1,10 +1,11 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 using System;
+using Il2CppInterop.Runtime.Attributes;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ namespace TSEspionage
      */
     public class CardTabBehaviour : MonoBehaviour
     {
+        // IL2CPP requires this constructor for injected types
+        public CardTabBehaviour(IntPtr ptr) : base(ptr) { }
+
         private const int CameraOffset = 37;
         private const int TabShrink = 6;
         private const int TabShrinkOffset = TabShrink / 2;
@@ -33,6 +37,7 @@ namespace TSEspionage
         private string _origDiscardPileText;
         private string _origRemovedPileText;
 
+        [HideFromIl2Cpp]
         public void Initialize(CardCountManager cardCountManager, Transform cardTray)
         {
             _cardCountManager = cardCountManager;
@@ -101,6 +106,7 @@ namespace TSEspionage
         /**
          * Updates the text of the card tabs with the count of each hand or pile.
          */
+        [HideFromIl2Cpp]
         public void UpdateText(CardCounts cardCounts)
         {
             ushort playerCount;

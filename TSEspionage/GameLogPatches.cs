@@ -1,11 +1,10 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
@@ -20,9 +19,6 @@ namespace TSEspionage
         private static ILogger _log;
         private static GameLogWriter _gameLogWriter;
 
-        private static readonly AccessTools.FieldRef<GameLog, List<GameLogItem>> LogItemListRef =
-            AccessTools.FieldRefAccess<GameLog, List<GameLogItem>>("m_logItemList");
-
         public static void Init(GameLogWriter gameLogWriter, ILogger log)
         {
             _gameLogWriter = gameLogWriter;
@@ -34,7 +30,11 @@ namespace TSEspionage
         {
             public static void Postfix(GameLog __instance)
             {
-                var entries = LogItemListRef(__instance).Select(item => new GameLogEntry
+                // In IL2CPP, we access the private field directly via the injected property
+                // The Il2CppInterop generates properties for private fields
+                var logItemList = __instance.m_logItemList;
+                
+                var entries = logItemList.ToArray().Select(item => new GameLogEntry
                 {
                     name = item.m_LogItemName.text,
                     desc = item.m_LogItemDesc.text,

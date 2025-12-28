@@ -1,12 +1,13 @@
-﻿/*
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 using System;
+using System.Collections.Generic;
+using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace TSEspionage
 {
@@ -62,8 +63,13 @@ namespace TSEspionage
      */
     public class CardCountManager : MonoBehaviour
     {
-        private readonly UnityEvent<CardCounts> _eventTrigger = new UnityEvent<CardCounts>();
+        // IL2CPP requires this constructor for injected types
+        public CardCountManager(IntPtr ptr) : base(ptr) { }
 
+        // Store callbacks manually since IL2CPP UnityEvent<T> has limitations with generic types
+        private readonly List<Action<CardCounts>> _listeners = new List<Action<CardCounts>>();
+
+        [HideFromIl2Cpp]
         public void UpdateCardCounts()
         {
             var players = TwilightLibWrapper.GetPlayers();
@@ -110,17 +116,27 @@ namespace TSEspionage
             cardCounts.DiscardPileCount = (ushort)gameDeckCounts.discard_pile_count;
             cardCounts.RemovedPileCount = (ushort)gameDeckCounts.removed_pile_count;
 
-            _eventTrigger.Invoke(cardCounts.Build());
+            // Invoke all registered listeners
+            var counts = cardCounts.Build();
+            foreach (var listener in _listeners)
+            {
+                listener?.Invoke(counts);
+            }
         }
 
-        public void AddListener(UnityAction<CardCounts> callback)
+        [HideFromIl2Cpp]
+        public void AddListener(Action<CardCounts> callback)
         {
-            _eventTrigger.AddListener(callback);
+            if (callback != null && !_listeners.Contains(callback))
+            {
+                _listeners.Add(callback);
+            }
         }
 
-        public void RemoveListener(UnityAction<CardCounts> callback)
+        [HideFromIl2Cpp]
+        public void RemoveListener(Action<CardCounts> callback)
         {
-            _eventTrigger.RemoveListener(callback);
+            _listeners.Remove(callback);
         }
     }
 }
