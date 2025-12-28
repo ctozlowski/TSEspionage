@@ -6,7 +6,7 @@
 
 using System;
 using System.Collections;
-using Il2CppInterop.Runtime;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using Il2CppInterop.Runtime.Attributes;
 using GameData;
 using UnityEngine;

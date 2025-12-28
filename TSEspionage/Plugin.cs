@@ -5,7 +5,6 @@
  */
 
 using BepInEx;
-using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
@@ -19,13 +18,11 @@ namespace TSEspionage
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class Plugin : BasePlugin
     {
-        internal static ManualLogSource Log;
         private static Harmony _harmony;
         private static bool _initialized = false;
 
         public override void Load()
         {
-            Log = base.Log;
             Log.LogInfo($"Loading {PluginInfo.PLUGIN_NAME} v{PluginInfo.PLUGIN_VERSION}...");
 
             // Register custom MonoBehaviour types with Il2Cpp
